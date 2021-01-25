@@ -4,6 +4,7 @@ const detailsContainer = document.querySelector("#details-container")
 const logInForm = document.querySelector('#log-in-form')
 const url = 'http://localhost:3000/'
 let selectedCity
+let currentUser
 
 
 // fetch requests
@@ -19,6 +20,14 @@ const fetchCityDetails = (e) => {
     fetch(`${url}cities/${id}`)
     .then(response => response.json())
     .then(renderIndividualCity)
+}
+
+
+const fetchVideoDetails = (e) => {
+    const id = e.target.dataset.id
+    fetch(`${url}videos/${id}`)
+    .then(response => response.json())
+    .then(renderIndividualVideo)
 }
 
 
@@ -96,9 +105,10 @@ const renderCategoryVideos = videoCategoryArray => {
         categoryArray.forEach(video => {
             const videoDiv = document.createElement('div')
                 videoDiv.dataset.id = video.id
+                const key = video.video_url.split('https://www.youtube.com/embed/')[1]
+                const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
                 videoDiv.innerHTML = `
-                    <iframe width="280" height="158" src="${video.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                    </iframe>
+                    <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
                     <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>
                     <p id='video-likes'>Likes: ${video.likes}</p>`
             
@@ -110,11 +120,81 @@ const renderCategoryVideos = videoCategoryArray => {
 
 
 const renderUserPage = (userObj) => {
+    currentUser = userObj
+    console.log("logged in")
+    fetchAllCities()
     //either render a user page OR render the cities page - fetchAllCities()
 }
 
 
 
+
+
+const renderIndividualVideo = (videoObj) => {
+    detailsContainer.innerHTML = ""
+
+    const videoDisplayDiv = document.querySelector('div')
+        videoDisplayDiv.innerHTML = `<iframe width="560" height="315" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        </iframe>`
+
+    
+    const videoDetailsDiv = document.createElement('div')
+        const videoTitle = document.createElement('h2')
+            videoTitle.innerText = videoObj.title
+        const videoCategory = document.createElement('h4')
+            videoCategory.innerText = videoObj.category
+        const videoLikes = document.createElement('p')
+            videoLikes.innerText = `Likes: ${videoObj.likes}`
+    const increaseLikesButton = document.createElement('button')
+        increaseLikesButton.innerText = "Like Video"
+        increaseLikesButton.id = "like-button"
+        increaseLikesButton.dataset.id = videoObj.id
+    videoDetailsDiv.append(videoTitle, videoCategory, videoLikes, increaseLikesButton)
+    
+    const newCommentFormDiv = document.createElement('div')
+
+    newCommentFormDiv.innerHTML = `
+      <form id="add-comment">
+          <label for="comment">Username</label>
+          <input type="text" name="username" id="username" placeholder="Add a Comment">
+          <button type="submit" id="submit-comment">Comment</button>
+      </form>
+    `
+
+    const commentsDiv = document.createElement('div')
+        const newUl = document.createElement('ul')
+        
+        videoObj.comments.forEach(comment => {
+
+            const newLi = document.createElement('li')
+                newLi.className = "comment-card"
+            const newBlockquote = document.createElement("BLOCKQUOTE")
+                newBlockquote.className = 'blockquote'
+            newLi.append(newBlockquote)
+                const newP = document.createElement('p')
+                    newP.className = 'mb-0'
+                    newP.innerText = comment.comment
+                const newFooter = document.createElement('footer')
+                    newFooter.className = 'blockquote-footer'
+                    newFooter.innerText = comment.author
+                const newBr = document.createElement('br')
+            newBlockquote.append(newP, newFooter, newBr)
+
+            if (comment.user_id === currentUser.id) {
+                const updateBtn = document.createElement('button')
+                    updateBtn.innerText = 'Update'
+                const deleteBtn = document.createElement('button')
+                    deleteBtn.innerText = 'Delete'
+                
+                newBlockquote.append(updateBtn, deleteBtn)
+            }
+
+            newUl.append(newLi)
+        })
+    commentsDiv.append(newUl)
+
+    detailsContainer.append(videoDisplayDiv, videoDetailsDiv, newCommentFormDiv, commentsDiv)
+}
 
 
 
@@ -153,7 +233,7 @@ detailsContainer.addEventListener('click', e => {
     if (e.target.matches('#city-name')) {
         fetchCityDetails(e)
     } else if (e.target.matches('#video-title')){
-        console.log("video info")
+        fetchVideoDetails(e)
     }
 })
 
