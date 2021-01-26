@@ -1,9 +1,8 @@
 // global variables
 const detailsContainer = document.querySelector("#details-container")
-
+const navBar = document.querySelector('nav')
 const logInForm = document.querySelector('#log-in-form')
 const url = 'http://localhost:3000/'
-let selectedCity
 let currentUser
 
 
@@ -55,9 +54,6 @@ const postNewCommentToBackend = newCommentObj => {
     })
     .then(response => response.json())
   }
-
-
-
   
   
   const fetchUpdateComment = e => {
@@ -85,14 +81,59 @@ const postNewCommentToBackend = newCommentObj => {
             updateButton.dataset.show = false
             updateButton.innerText = 'Update'
     })
-
     e.target.reset()
     e.target.remove()
   }
 
 
-// manipulate the DOM
+  const fetchCreateNewUser = e => {
+    e.preventDefault()
+    fetch(`${url}users`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({name: e.target.name.value}),
+      })
+      .then(response => response.json())
+      .then(userObj => {
+        if (userObj.id) {
+            loginUser(userObj)
+        } else {
+            alert(userObj.error)
+            e.target.reset()
+        }
+    });
+  }
 
+
+const increaseLikes = e => {
+    const id = e.target.dataset.id
+    const likesP = detailsContainer.querySelector('#likes-count')
+    let currentLikesPlusOne = parseInt(likesP.innerText.split(' ')[1]) + 1
+       
+    fetch(`${url}videos/${id}`, {
+        method: 'PATCH',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'likes': currentLikesPlusOne}),
+    })
+    .then(response => response.json())
+    .then(videoObj => {
+        likesP.innerText = `Likes: ${videoObj.likes}`
+    })
+}
+
+
+const fetchUploadVideo = e => {
+    e.preventDefault()
+    
+    
+    e.target.reset()
+}
+
+// manipulate the DOM
 const renderCitySelection = citiesArray => {
     detailsContainer.innerHTML = ""
     const citiesHeader = document.createElement('div')
@@ -104,7 +145,6 @@ const renderCitySelection = citiesArray => {
         //city name is displayed on the on the city image
         //when mouse if hovered, the city image plays video
         //detailscontainer.append(newciycard)
-
         citiesHeader.innerHTML += `
         <div data-id='${cityObj.id}' id='city-card'>
             <iframe width="560" height="315" src="${cityObj.display_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -116,6 +156,7 @@ const renderCitySelection = citiesArray => {
         `
     })
 }
+
 
 const renderIndividualCity = (cityObj) => {
     detailsContainer.innerHTML = ""
@@ -140,13 +181,12 @@ const renderIndividualCity = (cityObj) => {
 
     const videoCategoryArray = [foodVids, walkingVids, leisureVids, culturalVids, nightlifeVids]
     renderCategoryVideos(videoCategoryArray)
-
     // individual divs per video category
     // iterate through videos with that category to give mini displays
 }
 
-const renderCategoryVideos = videoCategoryArray => {
 
+const renderCategoryVideos = videoCategoryArray => {
     videoCategoryArray.forEach(categoryArray => {
         const newDiv = document.createElement('div')
         const newH1 = document.createElement('h1')
@@ -163,23 +203,75 @@ const renderCategoryVideos = videoCategoryArray => {
                     <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
                     <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>
                     <p id='video-likes'>Likes: ${video.likes}</p>`
-            
             newDiv.append(videoDiv)
         })
-
     })
 }
 
 
-const renderUserPage = (userObj) => {
+const loginUser = (userObj) => {
     currentUser = userObj
     console.log("logged in")
-    fetchAllCities()
-    //either render a user page OR render the cities page - fetchAllCities()
+    const navBarRight = navBar.querySelector('.nav.navbar-nav.navbar-right')
+        navBarRight.innerHTML = ""
+    const logOutLi = document.createElement('li')
+        logOutLi.id = 'logout'
+        logOutLi.className = "nav-item"
+        logOutLi.innerText = 'Logout'
+    navBarRight.append(logOutLi)
+    renderUserPage()
 }
 
 
+const renderUserPage = () => {
+    detailsContainer.innerHTML = ""
 
+    const newH1 = document.createElement('h1')
+        newH1.innerText = `Welcome ${currentUser.name}`
+    const uploadDiv = document.createElement('div')
+        const uploadFormButton = document.createElement('button')
+            uploadFormButton.id = 'upload-form-button'
+            uploadFormButton.dataset.show = false
+            uploadFormButton.innerText = "Upload a Video"
+        const uploadVideoForm = document.createElement('form')
+            uploadVideoForm.id = 'upload-video-form'
+            uploadVideoForm.dataset.user = currentUser.id
+            uploadVideoForm.style.display = 'none'
+            uploadVideoForm.innerHTML += videoForm
+        uploadDiv.append(uploadFormButton, uploadVideoForm) 
+    detailsContainer.append(newH1, uploadDiv)
+                    
+    const userVideoListDiv = document.createElement('div')
+    const userVideoListH3 = document.createElement('h3')
+    userVideoListH3.innerText = `${currentUser.name}'s Uploaded Videos`
+    userVideoListDiv.append(userVideoListH3)
+    
+    currentUser.videos.forEach(video => {
+        const userVideoDiv = document.createElement('div')
+            userVideoDiv.dataset.id = video.id
+            const key = video.video_url.split('https://www.youtube.com/embed/')[1]
+            const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
+            userVideoDiv.innerHTML = `
+                    <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
+                    <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>`
+          
+            userVideoListDiv.append(userVideoDiv)
+    });
+    detailsContainer.append(userVideoListDiv)
+}
+
+const showUploadVideoForm = e => {
+    const uploadVideoForm = detailsContainer.querySelector('#upload-video-form')
+    if (e.target.dataset.show === 'false') {
+        e.target.innerText = 'Nevermind'
+        e.target.dataset.show = true
+        uploadVideoForm.style.display = 'block'
+    } else {
+        e.target.innerText = 'Upload a Video'
+        e.target.dataset.show = false
+        uploadVideoForm.style.display = 'none'
+    }
+}
 
 
 const renderIndividualVideo = (videoObj) => {
@@ -188,20 +280,30 @@ const renderIndividualVideo = (videoObj) => {
     const videoDisplayDiv = document.querySelector('div')
         videoDisplayDiv.innerHTML = `<iframe width="560" height="315" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
         </iframe>`
-
-    
+ 
     const videoDetailsDiv = document.createElement('div')
         const videoTitle = document.createElement('h2')
             videoTitle.innerText = videoObj.title
         const videoCategory = document.createElement('h4')
             videoCategory.innerText = videoObj.category
+        const videoUploader = document.createElement('p')
+            videoUploader.innerText = `Uploaded By: ${videoObj.uploader}`
         const videoLikes = document.createElement('p')
+            videoLikes.id = 'likes-count'
             videoLikes.innerText = `Likes: ${videoObj.likes}`
-    const increaseLikesButton = document.createElement('button')
-        increaseLikesButton.innerText = "Like Video"
-        increaseLikesButton.id = "like-button"
-        increaseLikesButton.dataset.id = videoObj.id
-    videoDetailsDiv.append(videoTitle, videoCategory, videoLikes, increaseLikesButton)
+        const increaseLikesButton = document.createElement('button')
+            increaseLikesButton.innerText = "Like Video"
+            increaseLikesButton.id = "like-button"
+            increaseLikesButton.dataset.id = videoObj.id
+    videoDetailsDiv.append(videoTitle, videoCategory, videoUploader, videoLikes, increaseLikesButton)
+
+    if (videoObj.user.id === currentUser.id) {
+        const deleteBtn = document.createElement('button')
+            deleteBtn.id = "delete-comment"
+            deleteBtn.dataset.id = comment.id
+            deleteBtn.innerText = 'Delete Video'
+        videoDetailsDiv.append(deleteBtn)
+    }
     
     const newCommentFormDiv = document.createElement('div')
 
@@ -218,7 +320,6 @@ const renderIndividualVideo = (videoObj) => {
         newUl.id = 'comments-list'
         
         videoObj.comments.forEach(comment => {
-
             const newLi = document.createElement('li')
                 newLi.dataset.id = comment.id
                 newLi.className = "comment-card"
@@ -256,7 +357,6 @@ const renderIndividualVideo = (videoObj) => {
 }
 
 
-
 const slapNewCommentOnDom = (comment) => {
     const commentsUL = document.querySelector('#comments-list')
     
@@ -289,7 +389,7 @@ const slapNewCommentOnDom = (comment) => {
             newBlockquote.append(updateBtn, deleteBtn)
         }
 
-        commentsUL.append(newLi)
+    commentsUL.append(newLi)
 }
 
 
@@ -317,7 +417,6 @@ const renderUpdateForm = (e) => {
         updateForm.remove()      
     }
 }
-
 
 
 const renderSignupForm = () => {
@@ -351,7 +450,7 @@ logInForm.addEventListener('submit', e => {
     .then(res => res.json())
     .then(userObj => {
         if (userObj.id) {
-            renderUserPage(userObj)
+            loginUser(userObj)
         } else {
             alert(userObj.error)
             const newButton = document.createElement('button')
@@ -360,11 +459,7 @@ logInForm.addEventListener('submit', e => {
             detailsContainer.append(newButton)
         }
     })
-
-    e.target.reset()
 })
-
-
 
 
 detailsContainer.addEventListener('click', e => {
@@ -380,34 +475,91 @@ detailsContainer.addEventListener('click', e => {
         commentToRemove.remove()
     } else if (e.target.matches('#sign-up-button')){
         renderSignupForm()
+    } else if (e.target.matches('#like-button')) {
+        increaseLikes(e)
+    } else if (e.target.matches(`#upload-form-button`)){
+        showUploadVideoForm(e)
     }
 })
 
+
 detailsContainer.addEventListener('submit', e => {
     if (e.target.matches('#add-comment')) {
-
         e.preventDefault()
 
         newCommentContent = e.target.comment.value
         newCommentUser = parseInt(e.target.dataset.user)
         newCommentVideo = parseInt(e.target.dataset.video)
 
-
         newCommentObj = {
             video_id: newCommentVideo,
             user_id: newCommentUser,
             comment: newCommentContent
         }
-        
         postNewCommentToBackend(newCommentObj)
         e.target.reset()
     } else if (e.target.matches('#update-comment-form')) {
         fetchUpdateComment(e)
-    } else if (e.target.matches("#submit-signup")) {
+    } else if (e.target.matches("#signup-form")) {
         fetchCreateNewUser(e)
+    } else if (e.target.matches('#upload-video-form')){
+        fetchUploadVideo(e)
+    }
+})
+
+
+navBar.addEventListener('click', e => {
+    if (e.target.matches('#logout')) {
+        location.reload()
     }
 })
 
 
 
 // Random
+const videoForm = `
+    <label for="city">Select a City</label>
+        <select name="city" id="cities-list">
+        <option  data-id='10' value="Amsterdam">Amsterdam</option>
+        <option data-id='22' value="Bangkok">Bangkok</option>
+        <option data-id='12' value="Barcelona">Amsterdam</option>
+        <option data-id='15' value="Berlin">Berlin</option>
+        <option data-id='9' value="Buenos Aires">Buenos Aires</option>
+        <option data-id='18' value="Capetown">Capetown</option>
+        <option data-id='3' value="Chicago">Chicago</option>
+        <option data-id='20' value="Dubai">Dubai</option>
+        <option data-id='21' value="Hong Kong">Hong Kong</option>
+        <option data-id='17' value="Istanbul">Istanbul</option>
+        <option data-id='6' value="Las Vegas">Las Vegas</option>
+        <option data-id='11' value="London">London</option>
+        <option data-id='4' value="Los Angeles">Los Angeles</option>
+        <option data-id='8' value="Mexico City">Mexico City</option>
+        <option data-id='14' value="Milan">Milan</option>
+        <option data-id='1' value="New York City">New York City</option>
+        <option data-id='25' value="Osaka">Osaka</option>
+        <option data-id='13' value="Paris">Paris</option>
+        <option data-id='23' value="Phuket">Phuket</option>
+        <option data-id='16' value="Prague">Prague</option>
+        <option data-id='5' value="San Francisco">San Francisco</option>
+        <option data-id='26' value="Seoul">Seoul</option>
+        <option data-id='27' value="Shanghai">Shanghai</option>
+        <option data-id='24' value="Singapore">Singapore</option>
+        <option data-id='19' value="Sydney">Sydney</option>
+        <option data-id='28' value="Taipei">Taipei</option>
+        <option data-id='2' value="Tokyo">Tokyo</option>
+        <option data-id='7' value="Toronto">Toronto</option> 
+        </select><br>
+    <label for="title">Title</label>
+        <input type="text" name="title" id="title-area" placeholder="Add a Title"><br>
+    <label for="category">Select a Video Category</label>
+        <select name="category" id="categories">
+        <option value="Cultural">Cultural</option>
+        <option value="Food">Food</option>
+        <option value="Leisure">Leisure</option>
+        <option value="Nightlife">Nightlife</option>
+        <option value="Walking Tour">Walking Tour</option>
+        </select><br>
+    <label for="video_url">Video Url</label>
+        <input type="text" name="video_url" id="video-url-area" placeholder="Add a Video Url"><br>
+    <button type="submit" id="submit-video">Upload Video</button>
+    `
