@@ -328,7 +328,7 @@ const renderSignupForm = () => {
         
         newSignupForm.innerHTML = `
                     <label for="signup">Sign Up</label>
-                    <input type="text" name="signup" id="username-area" placeholder="Enter New Username">
+                    <input type="text" name="name" id="name-area" placeholder="Enter New Name">
                     <button type="submit" id="submit-signup">Submit</button>`
         
     detailsContainer.append(newSignupForm)
@@ -403,6 +403,8 @@ detailsContainer.addEventListener('submit', e => {
         e.target.reset()
     } else if (e.target.matches('#update-comment-form')) {
         fetchUpdateComment(e)
+    } else if (e.target.matches("#submit-signup")) {
+        fetchCreateNewUser(e)
     }
 })
 
