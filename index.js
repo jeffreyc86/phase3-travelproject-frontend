@@ -31,10 +31,64 @@ const fetchVideoDetails = (e) => {
 }
 
 
+const postNewCommentToBackend = newCommentObj => {
+    fetch(`${url}comments`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCommentObj),
+      })
+      .then(response => response.json())
+      .then(slapNewCommentOnDom);
+  }
+
+
+  const fetchDeleteComment = (e) => {
+    const id = parseInt(e.dataset.id)
+    fetch(`${url}comments/${id}`, {
+        method: 'DELETE', 
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(e),
+    })
+    .then(response => response.json())
+  }
 
 
 
+  
+  
+  const fetchUpdateComment = e => {
+    e.preventDefault()
+    
+    const id = e.target.dataset.id
+    
+    if (e.target.comment.value === "") {
+        e.target.comment.value = e.target.comment.placeholder
+    }
+    
+    const updatedComment = e.target.comment.value
 
+    fetch(`${url}comments/${id}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({comment: updatedComment})
+    })
+    .then(response => response.json())
+    .then(updatedCommentObj => {
+        const commentLi = detailsContainer.querySelector(`li[data-id="${updatedCommentObj.id}"]`)
+        const commentP = commentLi.querySelector('p')
+            commentP.innerText = updatedCommentObj.comment
+        const updateButton = commentLi.querySelector('#update-comment')
+            updateButton.dataset.show = false
+            updateButton.innerText = 'Update'
+    })
+
+    e.target.reset()
+    e.target.remove()
+  }
 
 
 // manipulate the DOM
@@ -62,8 +116,6 @@ const renderCitySelection = citiesArray => {
         `
     })
 }
-    
-
 
 const renderIndividualCity = (cityObj) => {
     detailsContainer.innerHTML = ""
@@ -154,19 +206,21 @@ const renderIndividualVideo = (videoObj) => {
     const newCommentFormDiv = document.createElement('div')
 
     newCommentFormDiv.innerHTML = `
-      <form id="add-comment">
-          <label for="comment">Username</label>
-          <input type="text" name="username" id="username" placeholder="Add a Comment">
+      <form data-video='${videoObj.id}' data-user='${currentUser.id}' id="add-comment">
+          <label for="comment">Add New Comment</label>
+          <input type="text" name="comment" id="comment-area" placeholder="Add a Comment">
           <button type="submit" id="submit-comment">Comment</button>
       </form>
     `
 
     const commentsDiv = document.createElement('div')
         const newUl = document.createElement('ul')
+        newUl.id = 'comments-list'
         
         videoObj.comments.forEach(comment => {
 
             const newLi = document.createElement('li')
+                newLi.dataset.id = comment.id
                 newLi.className = "comment-card"
             const newBlockquote = document.createElement("BLOCKQUOTE")
                 newBlockquote.className = 'blockquote'
@@ -182,8 +236,13 @@ const renderIndividualVideo = (videoObj) => {
 
             if (comment.user_id === currentUser.id) {
                 const updateBtn = document.createElement('button')
+                    updateBtn.id = "update-comment"
+                    updateBtn.dataset.show = false
+                    updateBtn.dataset.id = comment.id
                     updateBtn.innerText = 'Update'
                 const deleteBtn = document.createElement('button')
+                    deleteBtn.id = "delete-comment"
+                    deleteBtn.dataset.id = comment.id
                     deleteBtn.innerText = 'Delete'
                 
                 newBlockquote.append(updateBtn, deleteBtn)
@@ -198,6 +257,82 @@ const renderIndividualVideo = (videoObj) => {
 
 
 
+const slapNewCommentOnDom = (comment) => {
+    const commentsUL = document.querySelector('#comments-list')
+    
+        const newLi = document.createElement('li')
+            newLi.dataset.id = comment.id
+            newLi.className = "comment-card"
+        const newBlockquote = document.createElement("BLOCKQUOTE")
+            newBlockquote.className = 'blockquote'
+        newLi.append(newBlockquote)
+            const newP = document.createElement('p')
+                newP.className = 'mb-0'
+                newP.innerText = comment.comment
+            const newFooter = document.createElement('footer')
+                newFooter.className = 'blockquote-footer'
+                newFooter.innerText = comment.author
+            const newBr = document.createElement('br')
+        newBlockquote.append(newP, newFooter, newBr)
+
+        if (comment.user_id === currentUser.id) {
+            const updateBtn = document.createElement('button')
+                updateBtn.id = "update-comment"
+                updateBtn.dataset.show = false
+                updateBtn.dataset.id = comment.id
+                updateBtn.innerText = 'Update'
+            const deleteBtn = document.createElement('button')
+                deleteBtn.id = "delete-comment"
+                deleteBtn.dataset.id = comment.id
+                deleteBtn.innerText = 'Delete'
+            
+            newBlockquote.append(updateBtn, deleteBtn)
+        }
+
+        commentsUL.append(newLi)
+}
+
+
+const renderUpdateForm = (e) => {
+    const commentLi = e.target.closest('li')
+    if (e.target.dataset.show === "false") {
+        e.target.dataset.show = true
+        e.target.innerText = 'Nevermind'
+
+        const currentComment = commentLi.querySelector('p').innerText
+        const newForm = document.createElement('form')
+            newForm.id = 'update-comment-form'
+            newForm.dataset.id = e.target.dataset.id
+            newForm.innerHTML = `
+                    <label for="comment">Update Comment</label>
+                    <input type="text" name="comment" id="comment-area" placeholder="${currentComment}">
+                    <button type="submit" id="submit-comment">Update</button>`
+        
+        commentLi.append(newForm)
+    } else {
+        e.target.dataset.show = false
+        e.target.innerText = 'Update'
+        
+        const updateForm = commentLi.querySelector('form')
+        updateForm.remove()      
+    }
+}
+
+
+
+const renderSignupForm = () => {
+    detailsContainer.innerHTML = ""
+
+    const newSignupForm = document.createElement('form')
+        newSignupForm.id = 'signup-form'
+        
+        newSignupForm.innerHTML = `
+                    <label for="signup">Sign Up</label>
+                    <input type="text" name="signup" id="username-area" placeholder="Enter New Username">
+                    <button type="submit" id="submit-signup">Submit</button>`
+        
+    detailsContainer.append(newSignupForm)
+}
 
 
 // add Event Listeners
@@ -219,7 +354,10 @@ logInForm.addEventListener('submit', e => {
             renderUserPage(userObj)
         } else {
             alert(userObj.error)
-            // renderSignupPage
+            const newButton = document.createElement('button')
+                newButton.id = 'sign-up-button'
+                newButton.innerText = "Sign Up"
+            detailsContainer.append(newButton)
         }
     })
 
@@ -234,9 +372,39 @@ detailsContainer.addEventListener('click', e => {
         fetchCityDetails(e)
     } else if (e.target.matches('#video-title')){
         fetchVideoDetails(e)
+    } else if (e.target.matches('#update-comment')){
+        renderUpdateForm(e)
+    } else if (e.target.matches('#delete-comment')) {
+        const commentToRemove = e.target.closest('.comment-card')
+        fetchDeleteComment(commentToRemove)
+        commentToRemove.remove()
+    } else if (e.target.matches('#sign-up-button')){
+        renderSignupForm()
     }
 })
 
+detailsContainer.addEventListener('submit', e => {
+    if (e.target.matches('#add-comment')) {
+
+        e.preventDefault()
+
+        newCommentContent = e.target.comment.value
+        newCommentUser = parseInt(e.target.dataset.user)
+        newCommentVideo = parseInt(e.target.dataset.video)
+
+
+        newCommentObj = {
+            video_id: newCommentVideo,
+            user_id: newCommentUser,
+            comment: newCommentContent
+        }
+        
+        postNewCommentToBackend(newCommentObj)
+        e.target.reset()
+    } else if (e.target.matches('#update-comment-form')) {
+        fetchUpdateComment(e)
+    }
+})
 
 
 
