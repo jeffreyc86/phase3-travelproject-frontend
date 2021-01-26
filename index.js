@@ -128,9 +128,45 @@ const increaseLikes = e => {
 
 const fetchUploadVideo = e => {
     e.preventDefault()
-    
-    
+
+    const arr = e.target.video_url.value.split("https://www.youtube.com/watch?v=")
+    const vidUrl = `https://www.youtube.com/embed/${arr[1]}`
+
+    const videoObj = {
+        city_id: e.target.city.selectedOptions[0].dataset.id,
+        user_id: currentUser.id,
+        title: e.target.title.value,
+        category: e.target.category.value,
+        video_url: vidUrl,
+        likes: 0
+    }
+ 
+    fetch(`${url}videos`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(videoObj),
+      })
+      .then(response => response.json())
+      .then(renderVideoForList)
+
+    const uploadButton = detailsContainer.querySelector(`#upload-form-button`)
+        uploadButton.innerText = 'Upload a Video'
+        uploadButton.dataset.show = false
+     
     e.target.reset()
+    e.target.style.display = 'none'
+}
+
+
+const fetchToDeleteVideo = e => {
+    const id = parseInt(e.target.dataset.id)
+    fetch(`${url}videos/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    renderUserPage()
 }
 
 // manipulate the DOM
@@ -224,6 +260,12 @@ const loginUser = (userObj) => {
 
 
 const renderUserPage = () => {
+    fetch(`${url}users/${currentUser.id}`)
+    .then(response => response.json())
+    .then(userObj => {
+        currentUser = userObj
+    })
+
     detailsContainer.innerHTML = ""
 
     const newH1 = document.createElement('h1')
@@ -242,22 +284,26 @@ const renderUserPage = () => {
     detailsContainer.append(newH1, uploadDiv)
                     
     const userVideoListDiv = document.createElement('div')
+        userVideoListDiv.id = 'user-video-list'
     const userVideoListH3 = document.createElement('h3')
     userVideoListH3.innerText = `${currentUser.name}'s Uploaded Videos`
     userVideoListDiv.append(userVideoListH3)
     
-    currentUser.videos.forEach(video => {
-        const userVideoDiv = document.createElement('div')
-            userVideoDiv.dataset.id = video.id
-            const key = video.video_url.split('https://www.youtube.com/embed/')[1]
-            const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
-            userVideoDiv.innerHTML = `
-                    <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
-                    <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>`
-          
-            userVideoListDiv.append(userVideoDiv)
-    });
     detailsContainer.append(userVideoListDiv)
+    currentUser.videos.forEach(renderVideoForList);
+}
+
+const renderVideoForList = video => {
+    const userVideoListDiv = detailsContainer.querySelector('#user-video-list')
+    const userVideoDiv = document.createElement('div')
+        userVideoDiv.dataset.id = video.id
+        const key = video.video_url.split('https://www.youtube.com/embed/')[1]
+        const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
+        userVideoDiv.innerHTML = `
+                <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
+                <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>`
+      
+    userVideoListDiv.append(userVideoDiv)
 }
 
 const showUploadVideoForm = e => {
@@ -277,7 +323,7 @@ const showUploadVideoForm = e => {
 const renderIndividualVideo = (videoObj) => {
     detailsContainer.innerHTML = ""
 
-    const videoDisplayDiv = document.querySelector('div')
+    const videoDisplayDiv = document.createElement('div')
         videoDisplayDiv.innerHTML = `<iframe width="560" height="315" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
         </iframe>`
  
@@ -297,14 +343,14 @@ const renderIndividualVideo = (videoObj) => {
             increaseLikesButton.dataset.id = videoObj.id
     videoDetailsDiv.append(videoTitle, videoCategory, videoUploader, videoLikes, increaseLikesButton)
 
-    if (videoObj.user.id === currentUser.id) {
-        const deleteBtn = document.createElement('button')
-            deleteBtn.id = "delete-comment"
-            deleteBtn.dataset.id = comment.id
-            deleteBtn.innerText = 'Delete Video'
-        videoDetailsDiv.append(deleteBtn)
+    if (videoObj.user_id === currentUser.id) {
+        const videoDeleteBtn = document.createElement('button')
+            videoDeleteBtn.id = "delete-video-button"
+            videoDeleteBtn.dataset.id = videoObj.id
+            videoDeleteBtn.innerText = 'Delete Video'
+        videoDetailsDiv.append(videoDeleteBtn)
     }
-    
+
     const newCommentFormDiv = document.createElement('div')
 
     newCommentFormDiv.innerHTML = `
@@ -479,6 +525,8 @@ detailsContainer.addEventListener('click', e => {
         increaseLikes(e)
     } else if (e.target.matches(`#upload-form-button`)){
         showUploadVideoForm(e)
+    } else if (e.target.matches('#delete-video-button')) {
+        fetchToDeleteVideo(e)
     }
 })
 
