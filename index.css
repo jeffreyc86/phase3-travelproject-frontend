@@ -9,8 +9,25 @@
     border: 1px solid black;
     margin: 5px;
     padding: 10px;
+    position: relative;
 }
 
-iframe{
+.static {
     width: 100%;
+    position: relative;
+    background: white;
+    z-index: 1;
+    border: 2px solid red;
+  }
+  
+.static:hover {
+    opacity:0;
+}
+
+.active{
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    /* jacob change */
+    /*border: 1px green solid; */
 }

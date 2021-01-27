@@ -109,7 +109,7 @@ const postNewCommentToBackend = newCommentObj => {
 
 const increaseLikes = e => {
     const id = e.target.dataset.id
-    const likesP = detailsContainer.querySelector('#likes-count')
+    const likesP = detailsContainer.querySelector('.likes-count')
     let currentLikesPlusOne = parseInt(likesP.innerText.split(' ')[1]) + 1
        
     fetch(`${url}videos/${id}`, {
@@ -184,9 +184,9 @@ const renderCitySelection = citiesArray => {
         //detailscontainer.append(newciycard)
         citiesHeader.innerHTML += `
         <div data-id='${cityObj.id}' class='city-card'>
-            <iframe src="${cityObj.display_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-            </iframe>
-            <h6><button type="button" data-id='${cityObj.id}' id='city-name'>${cityObj.name}</button></h6>
+            <img class="static" src="${cityObj.static_url}" alt="${cityObj.name}">
+            <img class="active" src="${cityObj.display_url}" alt="${cityObj.name}">
+            <h6><button type="button" data-id='${cityObj.id}' class='city-name'>${cityObj.name}</button></h6>
             <h6 class='city-continent'>${cityObj.continent}</h6>
             <h6 class='city-country'>${cityObj.country}</h6>
         </div>
@@ -197,10 +197,11 @@ const renderCitySelection = citiesArray => {
 
 const renderIndividualCity = (cityObj) => {
     detailsContainer.innerHTML = ""
-
+    const cityDisplayContainer = document.createElement('div')
+        cityDisplayContainer.className = "city-display-container"
     // div city name, id/class
     const indidvidualCityDetails = document.createElement('div')
-    indidvidualCityDetails.classList.add('individual-city-details')
+        indidvidualCityDetails.classList.add('individual-city-details')
     const cityName = document.createElement('h1')
     const cityDescription = document.createElement('h3')
 
@@ -208,7 +209,7 @@ const renderIndividualCity = (cityObj) => {
     cityDescription.innerText = cityObj.description
 
     indidvidualCityDetails.append(cityName, cityDescription)
-    detailsContainer.append(indidvidualCityDetails)
+    cityDisplayContainer.append(indidvidualCityDetails)
     
     const foodVids = cityObj.videos.filter(video => video.category === "Food")
     const leisureVids = cityObj.videos.filter(video => video.category === "Leisure")
@@ -225,22 +226,24 @@ const renderIndividualCity = (cityObj) => {
 
 const renderCategoryVideos = videoCategoryArray => {
     videoCategoryArray.forEach(categoryArray => {
-        const newDiv = document.createElement('div')
+        const categoryDiv = document.createElement('div')
+            categoryDiv.className = "category-container" 
         const newH1 = document.createElement('h1')
             newH1.innerText = categoryArray[0].category
-        newDiv.append(newH1)
-        detailsContainer.append(newDiv)
+        categoryDiv.append(newH1)
+        detailsContainer.append(categoryDiv)
 
         categoryArray.forEach(video => {
             const videoDiv = document.createElement('div')
+                videoDiv.className = "video-card"
                 videoDiv.dataset.id = video.id
                 const key = video.video_url.split('https://www.youtube.com/embed/')[1]
                 const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
                 videoDiv.innerHTML = `
                     <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
-                    <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>
-                    <p id='video-likes'>Likes: ${video.likes}</p>`
-            newDiv.append(videoDiv)
+                    <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
+                    <p class='likes-count'>Likes: ${video.likes}</p>`
+            categoryDiv.append(videoDiv)
         })
     })
 }
@@ -268,6 +271,9 @@ const renderUserPage = () => {
     })
 
     detailsContainer.innerHTML = ""
+    const userDiv = document.createElement('div')
+        userDiv.className = "user-details"
+    detailsContainer.append(userDiv)
 
     const newH1 = document.createElement('h1')
         newH1.innerText = `Welcome ${currentUser.name}`
@@ -282,27 +288,29 @@ const renderUserPage = () => {
             uploadVideoForm.style.display = 'none'
             uploadVideoForm.innerHTML += videoForm
         uploadDiv.append(uploadFormButton, uploadVideoForm) 
-    detailsContainer.append(newH1, uploadDiv)
+    userDiv.append(newH1, uploadDiv)
                     
     const userVideoListDiv = document.createElement('div')
-        userVideoListDiv.id = 'user-video-list'
+        userVideoListDiv.className = 'user-video-list'
     const userVideoListH3 = document.createElement('h3')
     userVideoListH3.innerText = `${currentUser.name}'s Uploaded Videos`
     userVideoListDiv.append(userVideoListH3)
     
-    detailsContainer.append(userVideoListDiv)
+    userDiv.append(userVideoListDiv)
     currentUser.videos.forEach(renderVideoForList);
 }
 
 const renderVideoForList = video => {
-    const userVideoListDiv = detailsContainer.querySelector('#user-video-list')
+    const userVideoListDiv = detailsContainer.querySelector('.user-video-list')
     const userVideoDiv = document.createElement('div')
+        userVideoDiv.className = "video-card"
         userVideoDiv.dataset.id = video.id
         const key = video.video_url.split('https://www.youtube.com/embed/')[1]
         const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
         userVideoDiv.innerHTML = `
                 <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
-                <button type="button" data-id='${video.id}' id='video-title'>${video.title}</button>`
+                <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
+                <p class='likes-count'>Likes: ${video.likes}</p>`
       
     userVideoListDiv.append(userVideoDiv)
 }
@@ -324,11 +332,17 @@ const showUploadVideoForm = e => {
 const renderIndividualVideo = (videoObj) => {
     detailsContainer.innerHTML = ""
 
+    const videoPageContainer = document.createElement('div')
+        videoPageContainer.className = "video-page-container"
+    detailsContainer.append(videoPageContainer)
+
     const videoDisplayDiv = document.createElement('div')
+        videoDisplayDiv.className = "youtube-display"
         videoDisplayDiv.innerHTML = `<iframe width="560" height="315" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
         </iframe>`
  
     const videoDetailsDiv = document.createElement('div')
+        videoDetailsDiv.className = 'video-info'
         const videoTitle = document.createElement('h2')
             videoTitle.innerText = videoObj.title
         const videoCategory = document.createElement('h4')
@@ -336,7 +350,7 @@ const renderIndividualVideo = (videoObj) => {
         const videoUploader = document.createElement('p')
             videoUploader.innerText = `Uploaded By: ${videoObj.uploader}`
         const videoLikes = document.createElement('p')
-            videoLikes.id = 'likes-count'
+            videoLikes.className = 'likes-count'
             videoLikes.innerText = `Likes: ${videoObj.likes}`
         const increaseLikesButton = document.createElement('button')
             increaseLikesButton.innerText = "Like Video"
@@ -353,18 +367,20 @@ const renderIndividualVideo = (videoObj) => {
     }
 
     const newCommentFormDiv = document.createElement('div')
+        newCommentFormDiv.className = "comment-form"
 
     newCommentFormDiv.innerHTML = `
-      <form data-video='${videoObj.id}' data-user='${currentUser.id}' id="add-comment">
+      <form data-video='${videoObj.id}' data-user='${currentUser.id}' class="add-comment">
           <label for="comment">Add New Comment</label>
-          <input type="text" name="comment" id="comment-area" placeholder="Add a Comment">
-          <button type="submit" id="submit-comment">Comment</button>
+          <input type="text" name="comment" placeholder="Add a Comment">
+          <button type="submit" >Comment</button>
       </form>
     `
 
     const commentsDiv = document.createElement('div')
+        commentsDiv.className = "comments-area"
         const newUl = document.createElement('ul')
-        newUl.id = 'comments-list'
+        newUl.className = 'comments-list'
         
         videoObj.comments.forEach(comment => {
             const newLi = document.createElement('li')
@@ -400,12 +416,12 @@ const renderIndividualVideo = (videoObj) => {
         })
     commentsDiv.append(newUl)
 
-    detailsContainer.append(videoDisplayDiv, videoDetailsDiv, newCommentFormDiv, commentsDiv)
+    videoPageContainer.append(videoDisplayDiv, videoDetailsDiv, newCommentFormDiv, commentsDiv)
 }
 
 
 const slapNewCommentOnDom = (comment) => {
-    const commentsUL = document.querySelector('#comments-list')
+    const commentsUL = document.querySelector('.comments-list')
     
         const newLi = document.createElement('li')
             newLi.dataset.id = comment.id
@@ -500,19 +516,22 @@ logInForm.addEventListener('submit', e => {
             loginUser(userObj)
         } else {
             alert(userObj.error)
+            if (document.querySelector('#sign-up-button')){
+            } else {
             const newButton = document.createElement('button')
                 newButton.id = 'sign-up-button'
                 newButton.innerText = "Sign Up"
             detailsContainer.append(newButton)
+            }
         }
     })
 })
 
 
 detailsContainer.addEventListener('click', e => {
-    if (e.target.matches('#city-name')) {
+    if (e.target.matches('.city-name')) {
         fetchCityDetails(e)
-    } else if (e.target.matches('#video-title')){
+    } else if (e.target.matches('.video-title')){
         fetchVideoDetails(e)
     } else if (e.target.matches('#update-comment')){
         renderUpdateForm(e)
@@ -533,7 +552,7 @@ detailsContainer.addEventListener('click', e => {
 
 
 detailsContainer.addEventListener('submit', e => {
-    if (e.target.matches('#add-comment')) {
+    if (e.target.matches('.add-comment')) {
         e.preventDefault()
 
         newCommentContent = e.target.comment.value
@@ -568,8 +587,8 @@ navBar.addEventListener('click', e => {
 // Random
 const videoForm = `
     <label for="city">Select a City</label>
-        <select name="city" id="cities-list">
-        <option  data-id='10' value="Amsterdam">Amsterdam</option>
+        <select name="city">
+        <option data-id='10' value="Amsterdam">Amsterdam</option>
         <option data-id='22' value="Bangkok">Bangkok</option>
         <option data-id='12' value="Barcelona">Amsterdam</option>
         <option data-id='15' value="Berlin">Berlin</option>
@@ -599,9 +618,9 @@ const videoForm = `
         <option data-id='7' value="Toronto">Toronto</option> 
         </select><br>
     <label for="title">Title</label>
-        <input type="text" name="title" id="title-area" placeholder="Add a Title"><br>
+        <input type="text" name="title" placeholder="Add a Title"><br>
     <label for="category">Select a Video Category</label>
-        <select name="category" id="categories">
+        <select name="category">
         <option value="Cultural">Cultural</option>
         <option value="Food">Food</option>
         <option value="Leisure">Leisure</option>
@@ -609,6 +628,6 @@ const videoForm = `
         <option value="Walking Tour">Walking Tour</option>
         </select><br>
     <label for="video_url">Video Url</label>
-        <input type="text" name="video_url" id="video-url-area" placeholder="Add a Video Url"><br>
-    <button type="submit" id="submit-video">Upload Video</button>
+        <input type="text" name="video_url" placeholder="Add a Video Url"><br>
+    <button type="submit">Upload Video</button>
     `
