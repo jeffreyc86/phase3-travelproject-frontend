@@ -14,7 +14,7 @@
 
 .static {
     width: 100%;
-    position: relative;
+    position: absolute;
     background: white;
     z-index: 1;
     border: 2px solid red;
@@ -27,7 +27,6 @@
 .active{
     width: 100%;
     position: relative;
-    z-index: 2;
     /* jacob change */
     /*border: 1px green solid; */
 }
