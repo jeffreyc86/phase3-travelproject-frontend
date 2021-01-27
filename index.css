@@ -1,14 +1,16 @@
-.parent {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    }
-    
-    .div1 { grid-area: 1 / 1 / 2 / 13; }
-    .div2 { grid-area: 2 / 2 / 13 / 12; }
+.video-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
 
+.city-card{
+    width: 40%;
+    border: 1px solid black;
+    margin: 5px;
+    padding: 10px;
+}
 
-
-
+iframe{
+    width: 100%;
+}

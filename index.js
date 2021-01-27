@@ -173,6 +173,7 @@ const fetchToDeleteVideo = e => {
 const renderCitySelection = citiesArray => {
     detailsContainer.innerHTML = ""
     const citiesHeader = document.createElement('div')
+        citiesHeader.className = "video-container"
     detailsContainer.append(citiesHeader)
     //All Cities header
     //click on the city you'd like to learn about/visit 
@@ -182,12 +183,12 @@ const renderCitySelection = citiesArray => {
         //when mouse if hovered, the city image plays video
         //detailscontainer.append(newciycard)
         citiesHeader.innerHTML += `
-        <div data-id='${cityObj.id}' id='city-card'>
-            <iframe width="560" height="315" src="${cityObj.display_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        <div data-id='${cityObj.id}' class='city-card'>
+            <iframe src="${cityObj.display_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
             </iframe>
             <h6><button type="button" data-id='${cityObj.id}' id='city-name'>${cityObj.name}</button></h6>
-            <h6 id='city-continent'>${cityObj.continent}</h6>
-            <h6 id='city-country'>${cityObj.country}</h6>
+            <h6 class='city-continent'>${cityObj.continent}</h6>
+            <h6 class='city-country'>${cityObj.country}</h6>
         </div>
         `
     })
@@ -210,12 +211,12 @@ const renderIndividualCity = (cityObj) => {
     detailsContainer.append(indidvidualCityDetails)
     
     const foodVids = cityObj.videos.filter(video => video.category === "Food")
-    const walkingVids = cityObj.videos.filter(video => video.category === "Walking Tour")
     const leisureVids = cityObj.videos.filter(video => video.category === "Leisure")
-    const culturalVids = cityObj.videos.filter(video => video.category === "Cultural")
     const nightlifeVids = cityObj.videos.filter(video => video.category === "Nightlife")
+    const culturalVids = cityObj.videos.filter(video => video.category === "Cultural")
+    const walkingVids = cityObj.videos.filter(video => video.category === "Walking Tour")
 
-    const videoCategoryArray = [foodVids, walkingVids, leisureVids, culturalVids, nightlifeVids]
+    const videoCategoryArray = [foodVids, leisureVids, nightlifeVids, culturalVids, walkingVids]
     renderCategoryVideos(videoCategoryArray)
     // individual divs per video category
     // iterate through videos with that category to give mini displays
