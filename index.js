@@ -109,7 +109,7 @@ const postNewCommentToBackend = newCommentObj => {
 
 const increaseLikes = e => {
     const id = e.target.dataset.id
-    const likesP = detailsContainer.querySelector('.likes-count')
+    const likesP = detailsContainer.querySelector('.video-likes-count')
     let currentLikesPlusOne = parseInt(likesP.innerText.split(' ')[1]) + 1
        
     fetch(`${url}videos/${id}`, {
@@ -122,6 +122,13 @@ const increaseLikes = e => {
     .then(response => response.json())
     .then(videoObj => {
         likesP.innerText = `Likes: ${videoObj.likes}`
+        const increaseLikesButton = document.createElement('button')
+            increaseLikesButton.className = 'btn btn-primary btn-sm'
+            increaseLikesButton.innerText = "Like Video"
+            increaseLikesButton.style.marginLeft = "10px"
+            increaseLikesButton.id = "like-button"
+            increaseLikesButton.dataset.id = videoObj.id
+        likesP.append(increaseLikesButton)
     })
 }
 
@@ -149,7 +156,7 @@ const fetchUploadVideo = e => {
         body: JSON.stringify(videoObj),
       })
       .then(response => response.json())
-      .then(renderVideoForList)
+      .then(renderIndividualVideo)
 
     const uploadButton = detailsContainer.querySelector(`#upload-form-button`)
         uploadButton.innerText = 'Upload a Video'
@@ -245,8 +252,8 @@ const renderCategoryVideos = videoCategoryArray => {
                     const key = video.video_url.split('https://www.youtube.com/embed/')[1]
                     const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
                     videoDiv.innerHTML = `
-                        <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}"><br>
-                        <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
+                        <img class="preview-image rounded mx-auto d-block video-path" data-id='${video.id}' src="${thumbnailImg}" alt="${video.title}">
+                        <p class="video-title" >${video.title}</p>
                         <p class='likes-count'>Likes: ${video.likes}</p>`
                 categoryDiv.append(videoDiv)
             })
@@ -265,7 +272,7 @@ const loginUser = (userObj) => {
 
         const profilePageLi = document.createElement('li')
             profilePageLi.style.marginLeft = "20px"
-        profilePageLi.innerHTML = `<img class='nav-item' id='profile-page-fetcher' style="height: 30px"  src='../assets/images/profile.jpg'>`
+        profilePageLi.innerHTML = `<img class='nav-item' id='profile-page-fetcher' style="height: 28px"  src='../assets/images/profile.jpg'>`
 
         navBarLeft.append(allCitiesLi, profilePageLi)
     const navBarRight = navBar.querySelector('.nav.navbar-nav.navbar-right')
@@ -299,38 +306,92 @@ const renderUserPage = () => {
             uploadFormButton.id = 'upload-form-button'
             uploadFormButton.dataset.show = false
             uploadFormButton.innerText = "Upload a Video"
-        const uploadVideoForm = document.createElement('form')
-            uploadVideoForm.id = 'upload-video-form'
-            uploadVideoForm.dataset.user = currentUser.id
-            uploadVideoForm.style.display = 'none'
-            uploadVideoForm.innerHTML += videoForm
-        uploadDiv.append(uploadFormButton, uploadVideoForm) 
-    userDiv.append(newH1, uploadDiv)
+
+            const uploadFormDiv = document.createElement('div')
+            uploadFormDiv.id = 'upload-form-div'
+            
+            const uploadVideoForm = document.createElement('form')
+                uploadVideoForm.id = 'upload-video-form'
+                uploadVideoForm.dataset.user = currentUser.id
+                uploadVideoForm.style.display = 'none'
+                uploadVideoForm.innerHTML += videoForm
+            uploadFormDiv.append(uploadVideoForm)
+            uploadDiv.append(uploadFormButton, uploadFormDiv) 
+        userDiv.append(newH1, uploadDiv)
+
                     
     const userVideoListDiv = document.createElement('div')
         userVideoListDiv.className = 'user-video-list'
     const userVideoListH3 = document.createElement('h3')
     userVideoListH3.innerText = `${currentUser.name}'s Uploaded Videos`
     userVideoListDiv.append(userVideoListH3)
-    
+
+    const videoContainer = document.createElement('div')
+        videoContainer.className = "user-videos"
+
+    userVideoListDiv.append(videoContainer)
     userDiv.append(userVideoListDiv)
-    currentUser.videos.forEach(renderVideoForList);
+
+        const city1Vids = currentUser.videos.filter(video => video.city_id === 1)
+        const city2Vids = currentUser.videos.filter(video => video.city_id === 2)
+        const city3Vids = currentUser.videos.filter(video => video.city_id === 3)
+        const city4Vids = currentUser.videos.filter(video => video.city_id === 4)
+        const city5Vids = currentUser.videos.filter(video => video.city_id === 5)
+        const city6Vids = currentUser.videos.filter(video => video.city_id === 6)
+        const city7Vids = currentUser.videos.filter(video => video.city_id === 7)
+        const city8Vids = currentUser.videos.filter(video => video.city_id === 8)
+        const city9Vids = currentUser.videos.filter(video => video.city_id === 9)
+        const city10Vids = currentUser.videos.filter(video => video.city_id === 10)
+        const city11Vids = currentUser.videos.filter(video => video.city_id === 11)
+        const city12Vids = currentUser.videos.filter(video => video.city_id === 12)
+        const city13Vids = currentUser.videos.filter(video => video.city_id === 13)
+        const city14Vids = currentUser.videos.filter(video => video.city_id === 14)
+        const city15Vids = currentUser.videos.filter(video => video.city_id === 15)
+        const city16Vids = currentUser.videos.filter(video => video.city_id === 16)
+        const city17Vids = currentUser.videos.filter(video => video.city_id === 17)
+        const city18Vids = currentUser.videos.filter(video => video.city_id === 18)
+        const city19Vids = currentUser.videos.filter(video => video.city_id === 19)
+        const city20Vids = currentUser.videos.filter(video => video.city_id === 20)
+        const city21Vids = currentUser.videos.filter(video => video.city_id === 21)
+        const city22Vids = currentUser.videos.filter(video => video.city_id === 22)
+        const city23Vids = currentUser.videos.filter(video => video.city_id === 23)
+        const city24Vids = currentUser.videos.filter(video => video.city_id === 24)
+        const city25Vids = currentUser.videos.filter(video => video.city_id === 25)
+        const city26Vids = currentUser.videos.filter(video => video.city_id === 26)
+        const city27Vids = currentUser.videos.filter(video => video.city_id === 27)
+        const city28Vids = currentUser.videos.filter(video => video.city_id === 28)
+
+    const cityVideosArr = [city10Vids, city22Vids, city12Vids, city15Vids, city9Vids, city18Vids, city3Vids, city20Vids, city21Vids, city17Vids, city6Vids, city11Vids, city4Vids, city8Vids, city14Vids, city1Vids, city25Vids, city13Vids, city23Vids, city16Vids, city5Vids, city26Vids, city27Vids, city24Vids, city19Vids, city28Vids, city2Vids, city7Vids]
+    renderCityVideos(cityVideosArr)
 }
 
-const renderVideoForList = video => {
-    const userVideoListDiv = detailsContainer.querySelector('.user-video-list')
-    const userVideoDiv = document.createElement('div')
-        userVideoDiv.className = "video-card"
-        userVideoDiv.dataset.id = video.id
-        const key = video.video_url.split('https://www.youtube.com/embed/')[1]
-        const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
-        userVideoDiv.innerHTML = `
-                <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}" onerror="this.src='../assets/images/youtravel-logo.jpg';">
-                <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
-                <p class='likes-count'>Likes: ${video.likes}</p>`
-      
-    userVideoListDiv.append(userVideoDiv)
-}
+const renderCityVideos = cityVideosArr => {
+    cityVideosArr.forEach(cityArray => {
+        if (cityArray.length > 0){
+            const userVideoListDiv = detailsContainer.querySelector('.user-videos')
+            const newH1 = document.createElement('h1')
+                newH1.style.fontWeight = 'bold'
+                newH1.style.textAlign = "center"
+                newH1.innerText = cityArray[0].city
+            const cityDiv = document.createElement('div')
+                cityDiv.className = 'user-videos-by-city'
+            userVideoListDiv.append(newH1, cityDiv)
+            cityArray.forEach(video =>{
+                const userVideoDiv = document.createElement('div')
+                        userVideoDiv.className = "video-card"
+                        userVideoDiv.dataset.id = video.id
+                        const key = video.video_url.split('https://www.youtube.com/embed/')[1]
+                        const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
+                        userVideoDiv.innerHTML = `
+                                <img class="preview-image rounded mx-auto d-block video-path" data-id='${video.id}' src="${thumbnailImg}" alt="${video.title}">
+                                <p class="video-title" >${video.title}</p>
+                                <p class='likes-count'>Likes: ${video.likes}</p>`
+                 
+                cityDiv.append(userVideoDiv)
+            })
+        }
+    })
+}   
 
 const showUploadVideoForm = e => {
     const uploadVideoForm = detailsContainer.querySelector('#upload-video-form')
@@ -363,13 +424,14 @@ const renderIndividualVideo = (videoObj) => {
         videoDetailsDiv.style.marginTop = "10px"
         const videoTitle = document.createElement('h2')
             videoTitle.innerText = videoObj.title
+            videoTitle.style.fontWeight = "bold"
         const videoCategory = document.createElement('h3')
             videoCategory.innerText = `Category: ${videoObj.category}`
         const videoUploader = document.createElement('p')
             videoUploader.innerText = `Uploaded By: ${videoObj.uploader}`
         const videoLikes = document.createElement('p')
             videoLikes.style.marginTop = "-10px"
-            videoLikes.className = 'likes-count'
+            videoLikes.className = 'video-likes-count'
             videoLikes.innerText = `Likes: ${videoObj.likes}`
         const increaseLikesButton = document.createElement('button')
             increaseLikesButton.className = 'btn btn-primary btn-sm'
@@ -542,7 +604,7 @@ const renderSignupForm = () => {
         
         newSignupForm.innerHTML = `
                     <label for="signup" style="font-size: 40; font-weight: bold;">Sign Up</label>
-                    <input type="text" class="form-control" name="name" placeholder="Enter Name">
+                    <input type="text" style="text-align: center;" class="form-control" name="name" placeholder="Enter a Username">
                     <button type="submit" id="submit-signup" style="margin-top: 10px;" class="btn btn-outline-primary">Submit</button>`
         
     signupContainer.append(newSignupForm)
@@ -586,7 +648,7 @@ logInForm.addEventListener('submit', e => {
 detailsContainer.addEventListener('click', e => {
     if (e.target.matches('.city-name')) {
         fetchCityDetails(e)
-    } else if (e.target.matches('.video-title')){
+    } else if (e.target.matches('.video-path')){
         fetchVideoDetails(e)
     } else if (e.target.matches('#update-comment')){
         renderUpdateForm(e)
@@ -680,8 +742,8 @@ const videoForm = `
                 <option data-id='28' value="Taipei">Taipei</option>
                 <option data-id='2' value="Tokyo">Tokyo</option>
                 <option data-id='7' value="Toronto">Toronto</option> 
-                </select>
-            <label for="category">Select a Video Category</label>
+                </select><br>
+            <label style="margin-top: 20px;" for="category">Select a Video Category</label>
                 <select class="custom-select" name="category">
                 <option value="Cultural">Cultural</option>
                 <option value="Food">Food</option>
@@ -692,11 +754,12 @@ const videoForm = `
     </div>
     <div class="form-group" style="margin-top: 5px;">
         <label for="title">Title</label>
-        <input type="text" class="form-control" name="title" placeholder="Add a Title">
+        <input type="text" name="title" placeholder="Add a Title">
     </div>
     <div class="form-group" style="margin-top: 5px;">
         <label for="video_url">Video Url</label>
-        <input type="text" class="form-control" name="video_url" placeholder="Add a Video Url">
+        <input type="text" name="video_url" placeholder="Add a Video Url">
     </div>
     <button type="submit" class="btn btn-success btn-sm" style="margin-top: 5px;">Upload Video</button>
     `
+
