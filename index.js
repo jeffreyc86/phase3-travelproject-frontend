@@ -199,13 +199,15 @@ const renderIndividualCity = (cityObj) => {
     detailsContainer.innerHTML = ""
     const cityDisplayContainer = document.createElement('div')
         cityDisplayContainer.className = "city-display-container"
+    detailsContainer.append(cityDisplayContainer)
     // div city name, id/class
     const indidvidualCityDetails = document.createElement('div')
         indidvidualCityDetails.classList.add('individual-city-details')
     const cityName = document.createElement('h1')
-    const cityDescription = document.createElement('h3')
+    const cityDescription = document.createElement('p')
 
     cityName.innerText = cityObj.name
+    cityName.style.fontSize = 70
     cityDescription.innerText = cityObj.description
 
     indidvidualCityDetails.append(cityName, cityDescription)
@@ -230,8 +232,9 @@ const renderCategoryVideos = videoCategoryArray => {
             categoryDiv.className = "category-container" 
         const newH1 = document.createElement('h1')
             newH1.innerText = categoryArray[0].category
-        categoryDiv.append(newH1)
-        detailsContainer.append(categoryDiv)
+        const newBreak = document.createElement('br')
+        const cityDisplayContainer = detailsContainer.querySelector(".city-display-container")
+        cityDisplayContainer.append(newH1, categoryDiv, newBreak)
 
         categoryArray.forEach(video => {
             const videoDiv = document.createElement('div')
@@ -240,7 +243,7 @@ const renderCategoryVideos = videoCategoryArray => {
                 const key = video.video_url.split('https://www.youtube.com/embed/')[1]
                 const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
                 videoDiv.innerHTML = `
-                    <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
+                    <img class="preview-image" src="${thumbnailImg}" alt="${video.title}"><br>
                     <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
                     <p class='likes-count'>Likes: ${video.likes}</p>`
             categoryDiv.append(videoDiv)
@@ -308,7 +311,7 @@ const renderVideoForList = video => {
         const key = video.video_url.split('https://www.youtube.com/embed/')[1]
         const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
         userVideoDiv.innerHTML = `
-                <img width="280" height="158" src="${thumbnailImg}" alt="${video.title}">
+                <img class="preview-image" src="${thumbnailImg}" alt="${video.title}">
                 <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
                 <p class='likes-count'>Likes: ${video.likes}</p>`
       

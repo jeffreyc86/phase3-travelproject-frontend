@@ -1,3 +1,10 @@
+#details-container{
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 30px;
+}
+
 .video-container{
     display: flex;
     flex-flow: row wrap;
@@ -13,11 +20,9 @@
 }
 
 .static {
-    width: 100%;
+    width: 94.5%;
     position: absolute;
-    background: white;
     z-index: 1;
-    border: 2px solid red;
   }
   
 .static:hover {
@@ -27,6 +32,30 @@
 .active{
     width: 100%;
     position: relative;
-    /* jacob change */
-    /*border: 1px green solid; */
+
+}
+
+.individual-city-details{
+    text-align: center;
+}
+
+.category-container{
+    border: 1px solid black;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    padding: 20px;
+}
+
+.preview-image{
+    width: 100px;
+}
+
+.video-card{
+    width: 150px;
+    border: 1px solid black;
+    margin: 7px;
+    padding: 5px;
+    position: relative;
 }
