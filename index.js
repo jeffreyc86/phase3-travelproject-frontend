@@ -198,7 +198,7 @@ const renderCitySelection = citiesArray => {
 const renderIndividualCity = (cityObj) => {
     detailsContainer.innerHTML = ""
     const cityDisplayContainer = document.createElement('div')
-        cityDisplayContainer.className = "city-display-container"
+        cityDisplayContainer.className = "city-display-container container-fluid"
     detailsContainer.append(cityDisplayContainer)
     // div city name, id/class
     const indidvidualCityDetails = document.createElement('div')
@@ -229,7 +229,7 @@ const renderIndividualCity = (cityObj) => {
 const renderCategoryVideos = videoCategoryArray => {
     videoCategoryArray.forEach(categoryArray => {
         const categoryDiv = document.createElement('div')
-            categoryDiv.className = "category-container" 
+            categoryDiv.className = "category-container container-fluid" 
         const newH1 = document.createElement('h1')
             newH1.innerText = categoryArray[0].category
         const newBreak = document.createElement('br')
@@ -243,7 +243,7 @@ const renderCategoryVideos = videoCategoryArray => {
                 const key = video.video_url.split('https://www.youtube.com/embed/')[1]
                 const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
                 videoDiv.innerHTML = `
-                    <img class="preview-image" src="${thumbnailImg}" alt="${video.title}"><br>
+                    <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}"><br>
                     <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
                     <p class='likes-count'>Likes: ${video.likes}</p>`
             categoryDiv.append(videoDiv)
@@ -275,7 +275,7 @@ const renderUserPage = () => {
 
     detailsContainer.innerHTML = ""
     const userDiv = document.createElement('div')
-        userDiv.className = "user-details"
+        userDiv.className = "user-details container-fluid"
     detailsContainer.append(userDiv)
 
     const newH1 = document.createElement('h1')
@@ -313,7 +313,7 @@ const renderVideoForList = video => {
         const key = video.video_url.split('https://www.youtube.com/embed/')[1]
         const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
         userVideoDiv.innerHTML = `
-                <img class="preview-image" src="${thumbnailImg}" alt="${video.title}">
+                <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}">
                 <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
                 <p class='likes-count'>Likes: ${video.likes}</p>`
       
@@ -338,33 +338,39 @@ const renderIndividualVideo = (videoObj) => {
     detailsContainer.innerHTML = ""
 
     const videoPageContainer = document.createElement('div')
-        videoPageContainer.className = "video-page-container"
+        videoPageContainer.className = "video-page-container container-fluid"
     detailsContainer.append(videoPageContainer)
 
     const videoDisplayDiv = document.createElement('div')
         videoDisplayDiv.className = "youtube-display"
-        videoDisplayDiv.innerHTML = `<iframe width="560" height="315" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        videoDisplayDiv.innerHTML = `<iframe width="840" height="473" src="${videoObj.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
         </iframe>`
  
     const videoDetailsDiv = document.createElement('div')
         videoDetailsDiv.className = 'video-info'
+        videoDetailsDiv.style.marginTop = "10px"
         const videoTitle = document.createElement('h2')
             videoTitle.innerText = videoObj.title
-        const videoCategory = document.createElement('h4')
-            videoCategory.innerText = videoObj.category
+        const videoCategory = document.createElement('h3')
+            videoCategory.innerText = `Category: ${videoObj.category}`
         const videoUploader = document.createElement('p')
             videoUploader.innerText = `Uploaded By: ${videoObj.uploader}`
         const videoLikes = document.createElement('p')
+            videoLikes.style.marginTop = "-10px"
             videoLikes.className = 'likes-count'
             videoLikes.innerText = `Likes: ${videoObj.likes}`
         const increaseLikesButton = document.createElement('button')
+            increaseLikesButton.className = 'btn btn-primary btn-sm'
             increaseLikesButton.innerText = "Like Video"
+            increaseLikesButton.style.marginLeft = "10px"
             increaseLikesButton.id = "like-button"
             increaseLikesButton.dataset.id = videoObj.id
-    videoDetailsDiv.append(videoTitle, videoCategory, videoUploader, videoLikes, increaseLikesButton)
+        videoLikes.append(increaseLikesButton)
+    videoDetailsDiv.append(videoTitle, videoCategory, videoUploader, videoLikes)
 
     if (videoObj.user_id === currentUser.id) {
         const videoDeleteBtn = document.createElement('button')
+            videoDeleteBtn.className = "btn btn-danger btn-sm"
             videoDeleteBtn.id = "delete-video-button"
             videoDeleteBtn.dataset.id = videoObj.id
             videoDeleteBtn.innerText = 'Delete Video'
@@ -373,12 +379,13 @@ const renderIndividualVideo = (videoObj) => {
 
     const newCommentFormDiv = document.createElement('div')
         newCommentFormDiv.className = "comment-form"
+        newCommentFormDiv.style.marginTop = "10px"
 
     newCommentFormDiv.innerHTML = `
       <form data-video='${videoObj.id}' data-user='${currentUser.id}' class="add-comment">
-          <label for="comment">Add New Comment</label>
-          <input type="text" name="comment" placeholder="Add a Comment">
-          <button type="submit" >Comment</button>
+          <label class="col-form-label" for="comment">Add New Comment</label>
+          <input class="form-control" type="text" name="comment" placeholder="Add a Comment" required>
+          <button class="btn btn-success btn-sm" style="margin-top: 10px;" type="submit" >Comment</button>
       </form>
     `
 
@@ -399,22 +406,28 @@ const renderIndividualVideo = (videoObj) => {
                     newP.innerText = comment.comment
                 const newFooter = document.createElement('footer')
                     newFooter.className = 'blockquote-footer'
+                    newFooter.style.marginTop = "5px"
                     newFooter.innerText = comment.author
-                const newBr = document.createElement('br')
-            newBlockquote.append(newP, newFooter, newBr)
+                    newFooter.style.fontSize = "15"
+                    newFooter.style.fontStyle = "italic"
+            newBlockquote.append(newP, newFooter)
 
             if (comment.user_id === currentUser.id) {
                 const updateBtn = document.createElement('button')
                     updateBtn.id = "update-comment"
+                    updateBtn.className = "btn btn-warning btn-sm"
                     updateBtn.dataset.show = false
+                    updateBtn.style.marginLeft = "10px"
                     updateBtn.dataset.id = comment.id
                     updateBtn.innerText = 'Update'
                 const deleteBtn = document.createElement('button')
+                    deleteBtn.style.marginLeft = "10px"
+                    deleteBtn.className = "btn btn-danger btn-sm"
                     deleteBtn.id = "delete-comment"
                     deleteBtn.dataset.id = comment.id
                     deleteBtn.innerText = 'Delete'
                 
-                newBlockquote.append(updateBtn, deleteBtn)
+                newFooter.append(updateBtn, deleteBtn)
             }
 
             newUl.append(newLi)
@@ -439,22 +452,28 @@ const slapNewCommentOnDom = (comment) => {
                 newP.innerText = comment.comment
             const newFooter = document.createElement('footer')
                 newFooter.className = 'blockquote-footer'
+                newFooter.style.marginTop = "5px"
+                newFooter.style.fontSize = "15"
+                newFooter.style.fontStyle = "italic"
                 newFooter.innerText = comment.author
-            const newBr = document.createElement('br')
-        newBlockquote.append(newP, newFooter, newBr)
+        newBlockquote.append(newP, newFooter)
 
         if (comment.user_id === currentUser.id) {
             const updateBtn = document.createElement('button')
                 updateBtn.id = "update-comment"
+                updateBtn.className = "btn btn-warning btn-sm"
+                updateBtn.style.marginLeft = "10px"
                 updateBtn.dataset.show = false
                 updateBtn.dataset.id = comment.id
                 updateBtn.innerText = 'Update'
             const deleteBtn = document.createElement('button')
+                deleteBtn.style.marginLeft = "10px"
+                deleteBtn.className = "btn btn-danger btn-sm"
                 deleteBtn.id = "delete-comment"
                 deleteBtn.dataset.id = comment.id
                 deleteBtn.innerText = 'Delete'
             
-            newBlockquote.append(updateBtn, deleteBtn)
+            newFooter.append(updateBtn, deleteBtn)
         }
 
     commentsUL.append(newLi)
@@ -472,10 +491,10 @@ const renderUpdateForm = (e) => {
             newForm.id = 'update-comment-form'
             newForm.dataset.id = e.target.dataset.id
             newForm.innerHTML = `
-                    <label for="comment">Update Comment</label>
-                    <input type="text" name="comment" id="comment-area" placeholder="${currentComment}">
-                    <button type="submit" id="submit-comment">Update</button>`
-        
+                    <label class="col-form-label" for="comment">Update Comment</label>
+                    <input class="form-control" type="text" name="comment" placeholder="${currentComment}">
+                    <button class="btn btn-success btn-sm" style="margin-top: 10px;" type="submit">Update</button>`
+
         commentLi.append(newForm)
     } else {
         e.target.dataset.show = false
@@ -591,7 +610,7 @@ navBar.addEventListener('click', e => {
 
 // Random
 const videoForm = `
-    <div class="form-row align-items-center" style="margin-top: 5px;">
+    <div class="form-row align-items-center" style="margin-top: 10px;">
             <label for="city">Select a City</label>
                 <select class="custom-select" name="city">
                 <option data-id='10' value="Amsterdam">Amsterdam</option>
