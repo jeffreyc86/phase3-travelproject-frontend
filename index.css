@@ -1,13 +1,13 @@
-#details-container{
-    padding-top: 50px;
-    padding-right: 30px;
-    padding-bottom: 50px;
-    padding-left: 30px;
+body{
+    background-color: #f9f9f9;
 }
 
-.navbar-brand  {
-    content:url(../assets/images/youtravel-logo.jpg);
-    width: 200px;
+
+#details-container{
+    padding-top: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
 }
 
 .video-container{
@@ -17,15 +17,25 @@
 }
 
 .city-card{
-    width: 40%;
-    border: 1px solid black;
+    width: 48%;
     margin: 5px;
     padding: 10px;
     position: relative;
 }
 
+
+.city-card h6 {
+  font-family: 'Anton', sans-serif;
+  margin-top: 10px;
+}
+
+.city-images{
+  position: relative;
+  text-align: center;
+}
+
 .static {
-    width: 94.5%;
+    width: 100%;
     position: absolute;
     z-index: 1;
   }
@@ -39,6 +49,19 @@
     position: relative;
 
 }
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: white;
+    -webkit-text-stroke: .5px black;
+    font-family: 'Anton', sans-serif;
+    font-size: 40;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+
+  }
 
 .individual-city-details{
     text-align: center;
@@ -72,3 +95,8 @@
 .youtube-display{
     text-align: center;
 }
+
+/* 
+#sign-up-form-fetcher {
+    height: 30px;
+} */

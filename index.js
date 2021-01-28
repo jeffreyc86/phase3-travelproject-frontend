@@ -184,10 +184,11 @@ const renderCitySelection = citiesArray => {
         //detailscontainer.append(newciycard)
         citiesHeader.innerHTML += `
         <div data-id='${cityObj.id}' class='city-card'>
-            <img class="static" src="${cityObj.static_url}" alt="${cityObj.name}">
-            <img class="active" src="${cityObj.display_url}" alt="${cityObj.name}">
-            <h6><button type="button" data-id='${cityObj.id}' class='city-name'>${cityObj.name}</button></h6>
-            <h6 class='city-continent'>${cityObj.continent}</h6>
+            <div class="city-images">
+                <img class="static city-name" data-id='${cityObj.id}'  src="${cityObj.static_url}" alt="${cityObj.name}">
+                <img class="active" src="${cityObj.display_url}" alt="${cityObj.name}">
+                <div class="centered">${cityObj.name}</div>
+            </div>
             <h6 class='city-country'>${cityObj.country}</h6>
         </div>
         `
@@ -228,26 +229,28 @@ const renderIndividualCity = (cityObj) => {
 
 const renderCategoryVideos = videoCategoryArray => {
     videoCategoryArray.forEach(categoryArray => {
-        const categoryDiv = document.createElement('div')
-            categoryDiv.className = "category-container container-fluid" 
-        const newH1 = document.createElement('h1')
-            newH1.innerText = categoryArray[0].category
-        const newBreak = document.createElement('br')
-        const cityDisplayContainer = detailsContainer.querySelector(".city-display-container")
-        cityDisplayContainer.append(newH1, categoryDiv, newBreak)
+        if (categoryArray.length > 0){
+            const categoryDiv = document.createElement('div')
+                categoryDiv.className = "category-container container-fluid" 
+            const newH1 = document.createElement('h1')
+                newH1.innerText = categoryArray[0].category
+            const newBreak = document.createElement('br')
+            const cityDisplayContainer = detailsContainer.querySelector(".city-display-container")
+            cityDisplayContainer.append(newH1, categoryDiv, newBreak)
 
-        categoryArray.forEach(video => {
-            const videoDiv = document.createElement('div')
-                videoDiv.className = "video-card"
-                videoDiv.dataset.id = video.id
-                const key = video.video_url.split('https://www.youtube.com/embed/')[1]
-                const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
-                videoDiv.innerHTML = `
-                    <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}"><br>
-                    <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
-                    <p class='likes-count'>Likes: ${video.likes}</p>`
-            categoryDiv.append(videoDiv)
-        })
+            categoryArray.forEach(video => {
+                const videoDiv = document.createElement('div')
+                    videoDiv.className = "video-card"
+                    videoDiv.dataset.id = video.id
+                    const key = video.video_url.split('https://www.youtube.com/embed/')[1]
+                    const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
+                    videoDiv.innerHTML = `
+                        <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}"><br>
+                        <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
+                        <p class='likes-count'>Likes: ${video.likes}</p>`
+                categoryDiv.append(videoDiv)
+            })
+        }
     })
 }
 
@@ -255,12 +258,21 @@ const renderCategoryVideos = videoCategoryArray => {
 const loginUser = (userObj) => {
     currentUser = userObj
     console.log("logged in")
+    const navBarLeft = navBar.querySelector('.navbar-nav.me-auto')
+        const allCitiesLi = document.createElement('li')
+        allCitiesLi.style.marginLeft = "10px"
+        allCitiesLi.innerHTML = `<img class='nav-item' id='all-cities-fetcher' style="height: 30px" src='../assets/images/cities.jpg'>`
+
+        const profilePageLi = document.createElement('li')
+            profilePageLi.style.marginLeft = "20px"
+        profilePageLi.innerHTML = `<img class='nav-item' id='profile-page-fetcher' style="height: 30px"  src='../assets/images/profile.jpg'>`
+
+        navBarLeft.append(allCitiesLi, profilePageLi)
     const navBarRight = navBar.querySelector('.nav.navbar-nav.navbar-right')
         navBarRight.innerHTML = ""
     const logOutLi = document.createElement('li')
-        logOutLi.id = 'logout'
         logOutLi.className = "nav-item"
-        logOutLi.innerText = 'Logout'
+        logOutLi.innerHTML = `<img class='nav-link' style="height: 45px" id='logout' src='../assets/images/logout.jpg'>`
     navBarRight.append(logOutLi)
     renderUserPage()
 }
@@ -313,7 +325,7 @@ const renderVideoForList = video => {
         const key = video.video_url.split('https://www.youtube.com/embed/')[1]
         const thumbnailImg = `http://i3.ytimg.com/vi/${key}/maxresdefault.jpg`
         userVideoDiv.innerHTML = `
-                <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}">
+                <img class="preview-image rounded mx-auto d-block" src="${thumbnailImg}" alt="${video.title}" onerror="this.src='../assets/images/youtravel-logo.jpg';">
                 <button type="button" data-id='${video.id}' class='video-title'>${video.title}</button>
                 <p class='likes-count'>Likes: ${video.likes}</p>`
       
@@ -383,7 +395,7 @@ const renderIndividualVideo = (videoObj) => {
 
     newCommentFormDiv.innerHTML = `
       <form data-video='${videoObj.id}' data-user='${currentUser.id}' class="add-comment">
-          <label class="col-form-label" for="comment">Add New Comment</label>
+          <label class="col-form-label" for="comment" style="font-weight: bold;">Add New Comment</label>
           <input class="form-control" type="text" name="comment" placeholder="Add a Comment" required>
           <button class="btn btn-success btn-sm" style="margin-top: 10px;" type="submit" >Comment</button>
       </form>
@@ -391,6 +403,9 @@ const renderIndividualVideo = (videoObj) => {
 
     const commentsDiv = document.createElement('div')
         commentsDiv.className = "comments-area"
+        const newH5 = document.createElement('h5')
+            newH5.innerText = "Comments"
+            newH5.style.fontWeight = "bold"
         const newUl = document.createElement('ul')
         newUl.className = 'comments-list'
         
@@ -432,7 +447,7 @@ const renderIndividualVideo = (videoObj) => {
 
             newUl.append(newLi)
         })
-    commentsDiv.append(newUl)
+    commentsDiv.append(newH5, newUl)
 
     videoPageContainer.append(videoDisplayDiv, videoDetailsDiv, newCommentFormDiv, commentsDiv)
 }
@@ -491,7 +506,7 @@ const renderUpdateForm = (e) => {
             newForm.id = 'update-comment-form'
             newForm.dataset.id = e.target.dataset.id
             newForm.innerHTML = `
-                    <label class="col-form-label" for="comment">Update Comment</label>
+                    <label class="col-form-label" style="font-weight: bold;" for="comment">Update Comment</label>
                     <input class="form-control" type="text" name="comment" placeholder="${currentComment}">
                     <button class="btn btn-success btn-sm" style="margin-top: 10px;" type="submit">Update</button>`
 
@@ -509,15 +524,28 @@ const renderUpdateForm = (e) => {
 const renderSignupForm = () => {
     detailsContainer.innerHTML = ""
 
+    const navBarRight = navBar.querySelector('.nav.navbar-nav.navbar-right')
+        navBarRight.innerHTML = ""
+    const loginLi = document.createElement('li')
+        loginLi.className = "nav-item"
+        loginLi.innerHTML = `<img class='nav-link' style="height: 45px" id='login-click' src='../assets/images/login.jpg'>`
+    navBarRight.append(loginLi)
+
+    const signupContainer = document.createElement('div')
+        signupContainer.className = "signup-page-container container-fluid"
+        signupContainer.style.textAlign = "center"
+    detailsContainer.append(signupContainer)
+
     const newSignupForm = document.createElement('form')
         newSignupForm.id = 'signup-form'
+        newSignupForm.className = "form-signin"
         
         newSignupForm.innerHTML = `
-                    <label for="signup">Sign Up</label>
-                    <input type="text" name="name" id="name-area" placeholder="Enter New Name">
-                    <button type="submit" id="submit-signup">Submit</button>`
+                    <label for="signup" style="font-size: 40; font-weight: bold;">Sign Up</label>
+                    <input type="text" class="form-control" name="name" placeholder="Enter Name">
+                    <button type="submit" id="submit-signup" style="margin-top: 10px;" class="btn btn-outline-primary">Submit</button>`
         
-    detailsContainer.append(newSignupForm)
+    signupContainer.append(newSignupForm)
 }
 
 
@@ -543,9 +571,12 @@ logInForm.addEventListener('submit', e => {
             if (document.querySelector('#sign-up-button')){
             } else {
             const newButton = document.createElement('button')
+                const loginDiv = detailsContainer.querySelector('div')
+                newButton.style.textAlign = "center"
+                newButton.className = "btn btn-outline-primary btn-lg"
                 newButton.id = 'sign-up-button'
                 newButton.innerText = "Sign Up"
-            detailsContainer.append(newButton)
+            loginDiv.append(newButton)
             }
         }
     })
@@ -602,6 +633,14 @@ detailsContainer.addEventListener('submit', e => {
 
 navBar.addEventListener('click', e => {
     if (e.target.matches('#logout')) {
+        location.reload()
+    } else if (e.target.matches('#all-cities-fetcher')) {
+        fetchAllCities()
+    } else if (e.target.matches('#profile-page-fetcher')) {
+        renderUserPage()
+    } else if (e.target.matches('#sign-up-form-fetcher')) {
+        renderSignupForm()
+    } else if (e.target.matches('#login-click')){
         location.reload()
     }
 })
