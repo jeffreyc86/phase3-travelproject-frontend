@@ -281,7 +281,9 @@ const renderUserPage = () => {
     const newH1 = document.createElement('h1')
         newH1.innerText = `Welcome ${currentUser.name}`
     const uploadDiv = document.createElement('div')
+        uploadDiv.className = "upload-container"
         const uploadFormButton = document.createElement('button')
+            uploadFormButton.className = "btn btn-secondary"
             uploadFormButton.id = 'upload-form-button'
             uploadFormButton.dataset.show = false
             uploadFormButton.innerText = "Upload a Video"
@@ -589,48 +591,54 @@ navBar.addEventListener('click', e => {
 
 // Random
 const videoForm = `
-    <label for="city">Select a City</label>
-        <select name="city">
-        <option data-id='10' value="Amsterdam">Amsterdam</option>
-        <option data-id='22' value="Bangkok">Bangkok</option>
-        <option data-id='12' value="Barcelona">Amsterdam</option>
-        <option data-id='15' value="Berlin">Berlin</option>
-        <option data-id='9' value="Buenos Aires">Buenos Aires</option>
-        <option data-id='18' value="Capetown">Capetown</option>
-        <option data-id='3' value="Chicago">Chicago</option>
-        <option data-id='20' value="Dubai">Dubai</option>
-        <option data-id='21' value="Hong Kong">Hong Kong</option>
-        <option data-id='17' value="Istanbul">Istanbul</option>
-        <option data-id='6' value="Las Vegas">Las Vegas</option>
-        <option data-id='11' value="London">London</option>
-        <option data-id='4' value="Los Angeles">Los Angeles</option>
-        <option data-id='8' value="Mexico City">Mexico City</option>
-        <option data-id='14' value="Milan">Milan</option>
-        <option data-id='1' value="New York City">New York City</option>
-        <option data-id='25' value="Osaka">Osaka</option>
-        <option data-id='13' value="Paris">Paris</option>
-        <option data-id='23' value="Phuket">Phuket</option>
-        <option data-id='16' value="Prague">Prague</option>
-        <option data-id='5' value="San Francisco">San Francisco</option>
-        <option data-id='26' value="Seoul">Seoul</option>
-        <option data-id='27' value="Shanghai">Shanghai</option>
-        <option data-id='24' value="Singapore">Singapore</option>
-        <option data-id='19' value="Sydney">Sydney</option>
-        <option data-id='28' value="Taipei">Taipei</option>
-        <option data-id='2' value="Tokyo">Tokyo</option>
-        <option data-id='7' value="Toronto">Toronto</option> 
-        </select><br>
-    <label for="title">Title</label>
-        <input type="text" name="title" placeholder="Add a Title"><br>
-    <label for="category">Select a Video Category</label>
-        <select name="category">
-        <option value="Cultural">Cultural</option>
-        <option value="Food">Food</option>
-        <option value="Leisure">Leisure</option>
-        <option value="Nightlife">Nightlife</option>
-        <option value="Walking Tour">Walking Tour</option>
-        </select><br>
-    <label for="video_url">Video Url</label>
-        <input type="text" name="video_url" placeholder="Add a Video Url"><br>
-    <button type="submit">Upload Video</button>
+    <div class="form-row align-items-center" style="margin-top: 5px;">
+            <label for="city">Select a City</label>
+                <select class="custom-select" name="city">
+                <option data-id='10' value="Amsterdam">Amsterdam</option>
+                <option data-id='22' value="Bangkok">Bangkok</option>
+                <option data-id='12' value="Barcelona">Amsterdam</option>
+                <option data-id='15' value="Berlin">Berlin</option>
+                <option data-id='9' value="Buenos Aires">Buenos Aires</option>
+                <option data-id='18' value="Capetown">Capetown</option>
+                <option data-id='3' value="Chicago">Chicago</option>
+                <option data-id='20' value="Dubai">Dubai</option>
+                <option data-id='21' value="Hong Kong">Hong Kong</option>
+                <option data-id='17' value="Istanbul">Istanbul</option>
+                <option data-id='6' value="Las Vegas">Las Vegas</option>
+                <option data-id='11' value="London">London</option>
+                <option data-id='4' value="Los Angeles">Los Angeles</option>
+                <option data-id='8' value="Mexico City">Mexico City</option>
+                <option data-id='14' value="Milan">Milan</option>
+                <option data-id='1' value="New York City">New York City</option>
+                <option data-id='25' value="Osaka">Osaka</option>
+                <option data-id='13' value="Paris">Paris</option>
+                <option data-id='23' value="Phuket">Phuket</option>
+                <option data-id='16' value="Prague">Prague</option>
+                <option data-id='5' value="San Francisco">San Francisco</option>
+                <option data-id='26' value="Seoul">Seoul</option>
+                <option data-id='27' value="Shanghai">Shanghai</option>
+                <option data-id='24' value="Singapore">Singapore</option>
+                <option data-id='19' value="Sydney">Sydney</option>
+                <option data-id='28' value="Taipei">Taipei</option>
+                <option data-id='2' value="Tokyo">Tokyo</option>
+                <option data-id='7' value="Toronto">Toronto</option> 
+                </select>
+            <label for="category">Select a Video Category</label>
+                <select class="custom-select" name="category">
+                <option value="Cultural">Cultural</option>
+                <option value="Food">Food</option>
+                <option value="Leisure">Leisure</option>
+                <option value="Nightlife">Nightlife</option>
+                <option value="Walking Tour">Walking Tour</option>
+                </select>
+    </div>
+    <div class="form-group" style="margin-top: 5px;">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" placeholder="Add a Title">
+    </div>
+    <div class="form-group" style="margin-top: 5px;">
+        <label for="video_url">Video Url</label>
+        <input type="text" class="form-control" name="video_url" placeholder="Add a Video Url">
+    </div>
+    <button type="submit" class="btn btn-success btn-sm" style="margin-top: 5px;">Upload Video</button>
     `

@@ -5,6 +5,11 @@
     padding-left: 30px;
 }
 
+.navbar-brand  {
+    content:url(../assets/images/youtravel-logo.jpg);
+    width: 200px;
+}
+
 .video-container{
     display: flex;
     flex-flow: row wrap;
@@ -44,7 +49,7 @@
     justify-content: flex-start;
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
+    overflow: auto;
     padding: 20px;
 }
 
@@ -58,4 +63,8 @@
     margin: 7px;
     padding: 5px;
     position: relative;
+}
+
+.upload-container{
+    text-align: center;
 }
