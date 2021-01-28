@@ -2,6 +2,7 @@ body{
     background-color: #f9f9f9;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" style="font-size: 30px;"><text y="35">🛩</text></svg>'), auto;
 
+
 }
 
 
@@ -39,6 +40,7 @@ body{
 
 .static {
     width: 100%;
+    height: 300px;
     position: absolute;
     z-index: 1;
   }
@@ -49,8 +51,8 @@ body{
 
 .active{
     width: 100%;
+    height: 300px;
     position: relative;
-
 }
 
 .centered {
