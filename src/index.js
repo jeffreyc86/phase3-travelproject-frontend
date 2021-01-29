@@ -2,7 +2,7 @@
 const detailsContainer = document.querySelector("#details-container")
 const navBar = document.querySelector('nav')
 const logInForm = document.querySelector('#log-in-form')
-const url = 'http://localhost:3000/'
+const url = 'https://you-travel-app.herokuapp.com/'
 let currentUser
 
 
