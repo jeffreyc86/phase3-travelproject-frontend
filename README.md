@@ -9,7 +9,7 @@ Front end for YouTravel - a single-page application (SPA) video platform for tra
 Requires [YouTravel back end](https://github.com/jeffreyc86/youtravel-backend).
 
 To use, after starting api server, run:
-```bash
+```zsh
 npm install && npm start
 ```
 
