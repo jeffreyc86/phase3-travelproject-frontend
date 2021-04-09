@@ -1,4 +1,4 @@
-# YouTravel - Server
+# YouTravel - Client
 
 Front end for YouTravel - a single-page application (SPA) video platform for travelers. The front end was built with vanilla Javascript and the back end was built using a Ruby on Rails API.
 
