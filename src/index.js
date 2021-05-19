@@ -606,7 +606,7 @@ const renderSignupForm = () => {
         
         newSignupForm.innerHTML = `
                     <label for="signup" style="font-size: 40; font-weight: bold;">Sign Up</label>
-                    <input type="text" style="text-align: center;" class="form-control" name="name" placeholder="Enter a Username">
+                    <input type="text" style="text-align: center;" class="form-control" name="name" placeholder="Enter a Username" required>
                     <button type="submit" id="submit-signup" style="margin-top: 10px;" class="btn btn-outline-primary">Submit</button>`
         
     signupContainer.append(newSignupForm)
