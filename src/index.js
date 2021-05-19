@@ -2,6 +2,8 @@
 const detailsContainer = document.querySelector("#details-container")
 const navBar = document.querySelector('nav')
 const logInForm = document.querySelector('#log-in-form')
+const logInErrorDiv = document.querySelector('.login-error-div')
+const demoLogin = document.querySelector(".demo-login")
 const url = 'https://you-travel-app.herokuapp.com/'
 let currentUser
 
@@ -638,10 +640,26 @@ logInForm.addEventListener('submit', e => {
                 newButton.className = "btn btn-outline-primary btn-lg"
                 newButton.id = 'sign-up-button'
                 newButton.innerText = "Sign Up"
-            loginDiv.append(newButton)
+                newButton.style.marginBottom = "10px"
+            logInErrorDiv.append(newButton)
             }
         }
     })
+})
+
+demoLogin.addEventListener('click', ()=>{
+    fetch(`${url}login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ username: "Admin" }),
+    })
+      .then((res) => res.json())
+      .then((userObj) => {
+          loginUser(userObj);
+      });
 })
 
 

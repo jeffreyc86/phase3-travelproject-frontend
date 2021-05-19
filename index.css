@@ -1,8 +1,18 @@
 body{
     background-color: #f9f9f9;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" style="font-size: 30px;"><text y="35">🛩</text></svg>'), auto;
+}
 
+.demo-login{
+    text-align: center;
+    margin-top: -5px;
+    font-size: .9rem;
+    cursor: pointer;
+}
 
+.demo-login:hover{
+    font-weight: bold;
+    color: #0275d8;
 }
 
 

@@ -14,7 +14,7 @@ Watch the [Demo](https://www.loom.com/share/7fd0bb35571a4eb8bfdef9d2c4ea1c3e)
 
 To use, start api server and run:
 ```zsh
-npm install && npm start
+open index.html
 ```
 
 ## Features
