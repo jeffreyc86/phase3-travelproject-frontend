@@ -15,6 +15,14 @@ body{
     color: #0275d8;
 }
 
+.demo-message{
+    font-size: .5rem
+}
+
+.demo-login:hover > .demo-message{
+    font-weight: normal;
+    color: black
+}
 
 
 #details-container{
