@@ -16,7 +16,8 @@ body{
 }
 
 .demo-message{
-    font-size: .5rem
+    font-size: .5rem;
+    color: black
 }
 
 .demo-login:hover > .demo-message{
