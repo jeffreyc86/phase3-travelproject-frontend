@@ -648,12 +648,14 @@ logInForm.addEventListener('submit', e => {
 })
 
 demoLogin.addEventListener('click', ()=>{
-    const newBreak = document.createElement("br")
-    const newSpan = document.createElement("span")
-        newSpan.className = "demo-message"
-        newSpan.innerText = "It may take a few seconds for the back end to fire up"
+    if (!document.querySelector(".demo-message")){
+        const newBreak = document.createElement("br")
+        const newSpan = document.createElement("span")
+            newSpan.className = "demo-message"
+            newSpan.innerText = "It may take a few seconds for the back end to fire up"
+        
+        demoLogin.append(newBreak, newSpan)
     
-    demoLogin.append(newBreak, newSpan)
 
     fetch(`${url}login`, {
       method: "POST",
@@ -667,6 +669,8 @@ demoLogin.addEventListener('click', ()=>{
       .then((userObj) => {
           loginUser(userObj);
       });
+      
+    }
 })
 
 
